@@ -20,12 +20,9 @@
     <hr>
     <% if(typeof(errors) != 'undefined' ) { %>
         <% for (var x in errors) { %>
-            <% if(typeof(errors[x]) != 'undefined') { %>
-                <h3><%= errors[x].errors %></h3>
-            <% } %>
+         <h3><%= errors[x].message %></h3>
         <% } %>
     <% } %>
-    
     <form id='messages' action=/newmessage method='post'>
         <h3>Name:</h3>
         <input type='text' name='name'>

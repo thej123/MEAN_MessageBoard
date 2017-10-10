@@ -3,6 +3,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var path = require('path');
 var mongoose = require('mongoose');
+var errorArr = [];
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, './static')));
@@ -49,6 +50,8 @@ app.post('/newcomment/:id', function (req, res){
          comment.save(function(err){
              if (err) {
                  console.log('error when trying to save comment')
+                 errorArr = comment.errors;
+                 res.redirect('/')
              } else {
                 console.log('comment saved')
                 post.save(function(err){
@@ -65,41 +68,19 @@ app.post('/newcomment/:id', function (req, res){
  });
 
 app.get('/', function(req, res) {
-    // Post.find({}, function(err, posts) {
-    //     if (err) {
-    //         console.log("could not retrieve all posts");
-    //         console.log(err);
-    //         var error = err;
-    //         res.render('index', {errors: err.error});            
-    //     } else {
-    //         console.log("got messages")
-    //         console.log(posts)
-    //         var posts = posts;
-    //         Comment.find({}, function(err, comments) {
-    //             if (err) {
-    //                 console.log("could not retrive all comments");
-    //                 console.log(err);
-    //             } else {
-    //                 console.log("got posts")                    
-    //                 console.log(comments)
-    //                 var comments = comments;
-    //                 res.render('index', {posts: posts, comments: comments})
-    //             }
-    //         })
-            // res.render('index', {posts: posts});            
-    //     }
-    // })
-    
     Post.find({})
     .populate('comments')
     .exec(function(err, post) {
         if (err) {
             console.log("i got error");
             console.log(err);
+            res.render('index', {errors: err});
         } else {
             console.log("i got stuff");
             console.log(post);
-            res.render('index', {posts: post});
+            console.log(errorArr)
+            res.render('index', {posts: post, errors: errorArr});
+            errorArr = [];
         }
     });
 });
@@ -111,6 +92,8 @@ app.post('/newmessage', function(req, res) {
     post.save(function(err) {
         if(err) {
             console.log("error when saving new message")
+            errorArr = post.errors;
+            res.redirect('/')
         } else {
             console.log("successfully saved new message")
             res.redirect('/')
