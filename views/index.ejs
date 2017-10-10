@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        *{
+            padding: 0;
+            /* margin: 0 auto; */
+        }
+        body{
+            background-color: grey;
+        }
+    </style>
+    <title>Mongoose Message Board</title>
+</head>
+<body>
+    <h1>The Dojo Message Board</h1>
+    <hr>
+    <% if(typeof(errors) != 'undefined' ) { %>
+        <% for (var x in errors) { %>
+            <% if(typeof(errors[x]) != 'undefined') { %>
+                <h3><%= errors[x].errors %></h3>
+            <% } %>
+        <% } %>
+    <% } %>
+    
+    <form id='messages' action=/newmessage method='post'>
+        <h3>Name:</h3>
+        <input type='text' name='name'>
+        <h3>Message:</h3>
+        <textarea name="message" id="messages" cols="100" rows="5"></textarea><br>
+        <input type="submit" value='Post message'>
+    </form><hr>
+
+
+
+    <% if(typeof(posts) != 'undefined') { %>
+        <% for (x in posts) { %>
+            <p>Post <%= Number(x) + 1 %> </p>
+            <p>Name: <%= posts[x].name %></p>
+            <p>Message: <%= posts[x].message %></p>
+            <% for (y of posts[x].comments) { %>
+                <h5>Name: <%=y.name %></h5>
+                <h5>Comment: <%=y.comment %></h5>
+            <% } %>
+            <form id='posts' action='/newcomment/<%=posts[x]._id%>' method='post'>
+                <h5>Name:</h5>
+                <input type='text' name='name'>
+                <h5>Message:</h5>
+                <textarea name="comment" id="posts" cols="100" rows="5"></textarea><br>
+                <input type="submit" value='Post comment'>
+            </form><hr>
+        <% } %>
+    <% } %>
+</body>
+</html>
